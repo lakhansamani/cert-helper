@@ -1,4 +1,4 @@
-module cert-generator
+module github.com/lakhansamani/cert-generator
 
 go 1.19
 

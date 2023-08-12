@@ -4,7 +4,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 
-	pkg "cert-generator/pkg"
+	"github.com/lakhansamani/cert-generator/pkg"
 )
 
 var (

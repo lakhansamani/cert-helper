@@ -1,7 +1,7 @@
 package main
 
 import (
-	"cert-generator/cmd"
+	"github.com/lakhansamani/cert-generator/cmd"
 )
 
 var (
