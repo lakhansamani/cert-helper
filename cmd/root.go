@@ -25,8 +25,8 @@ var (
 func init() {
 	// Setup flags
 	f := RootCmd.Flags()
-	f.StringVar(&rootArgs.algorithm, "algorithm", "RS256", "Algorithm for which certificates will be generated. Default will be RS256. Valid values are RS256, RS384, RS512, ES256, ES384, ES512, HS256, HS384, HS512")
-	f.StringVar(&rootArgs.key, "key", uuid.NewString(), "Key ID using which certificates will be generated. Default will be random UUID.")
+	f.StringVarP(&rootArgs.algorithm, "algorithm", "a", "RS256", "Algorithm for which certificates will be generated. Valid values are RS256, RS384, RS512, ES256, ES384, ES512, HS256, HS384, HS512")
+	f.StringVarP(&rootArgs.key, "key", "k", uuid.NewString(), "Key ID using which certificates will be generated. Default will be random UUID.")
 }
 
 func runRootCmd(cmd *cobra.Command, args []string) {
