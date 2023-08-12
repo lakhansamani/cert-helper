@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"encoding/json"
+
 	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 
@@ -29,32 +31,50 @@ func init() {
 	f.StringVarP(&rootArgs.key, "key", "k", uuid.NewString(), "Key ID using which certificates will be generated. Default will be random UUID.")
 }
 
+type Output struct {
+	Secret     string `json:"secret"`
+	PrivateKey string `json:"private_key"`
+	PublicKey  string `json:"public_key"`
+}
+
 func runRootCmd(cmd *cobra.Command, args []string) {
 	algo := rootArgs.algorithm
 	key := rootArgs.key
+	output := Output{}
 	if pkg.IsHMACA(algo) {
 		secret, _, err := pkg.NewHMACKey(algo, key)
 		if err != nil {
 			panic(err)
 		}
 		println(secret)
+		output.Secret = secret
 	} else if pkg.IsECDSA(algo) {
-		_, privateKey, publicKey, jwk, err := pkg.NewECDSAKey(algo, key)
+		_, privateKey, publicKey, _, err := pkg.NewECDSAKey(algo, key)
 		if err != nil {
 			panic(err)
 		}
 		println(privateKey)
 		println(publicKey)
-		println(jwk)
+		output.PrivateKey = privateKey
+		output.PublicKey = publicKey
 	} else if pkg.IsRSA(algo) {
-		_, privateKey, publicKey, jwk, err := pkg.NewRSAKey(algo, key)
+		_, privateKey, publicKey, _, err := pkg.NewRSAKey(algo, key)
 		if err != nil {
 			panic(err)
 		}
 		println(privateKey)
 		println(publicKey)
-		println(jwk)
+		output.PrivateKey = privateKey
+		output.PublicKey = publicKey
 	} else {
 		panic("Invalid algo")
 	}
+
+	// Print stringified JSON
+	b, err := json.Marshal(output)
+	if err != nil {
+		panic(err)
+	}
+	println("Stringified JSON Output")
+	println(string(b))
 }
