@@ -32,29 +32,29 @@ func init() {
 }
 
 type Output struct {
-	Secret     string `json:"secret"`
-	PrivateKey string `json:"private_key"`
-	PublicKey  string `json:"public_key"`
+	EncryptionKey string `json:"encryption_key"`
+	Secret        string `json:"secret"`
+	PrivateKey    string `json:"private_key"`
+	PublicKey     string `json:"public_key"`
 }
 
 func runRootCmd(cmd *cobra.Command, args []string) {
 	algo := rootArgs.algorithm
 	key := rootArgs.key
-	output := Output{}
+	output := Output{
+		EncryptionKey: key,
+	}
 	if pkg.IsHMACA(algo) {
 		secret, _, err := pkg.NewHMACKey(algo, key)
 		if err != nil {
 			panic(err)
 		}
-		println(secret)
 		output.Secret = secret
 	} else if pkg.IsECDSA(algo) {
 		_, privateKey, publicKey, _, err := pkg.NewECDSAKey(algo, key)
 		if err != nil {
 			panic(err)
 		}
-		println(privateKey)
-		println(publicKey)
 		output.PrivateKey = privateKey
 		output.PublicKey = publicKey
 	} else if pkg.IsRSA(algo) {
@@ -62,8 +62,6 @@ func runRootCmd(cmd *cobra.Command, args []string) {
 		if err != nil {
 			panic(err)
 		}
-		println(privateKey)
-		println(publicKey)
 		output.PrivateKey = privateKey
 		output.PublicKey = publicKey
 	} else {
@@ -75,6 +73,12 @@ func runRootCmd(cmd *cobra.Command, args []string) {
 	if err != nil {
 		panic(err)
 	}
-	println("Stringified JSON Output")
+	println("-----BEGIN ENCRYPTION KEY-----")
+	println(rootArgs.key)
+	println("-----BEGIN ENCRYPTION KEY-----\n")
+	println(output.PrivateKey)
+	println(output.PublicKey)
+	println("-----BEGIN JSON OUTPUT-----")
 	println(string(b))
+	println("-----END JSON OUTPUT-----\n")
 }
