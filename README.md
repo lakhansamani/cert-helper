@@ -1,3 +1,29 @@
 # cert-generator
 
-Cert Generator helps generate public & private certificates/keys for HMAC/RSA/ECDSA algorithms
+Cert Generator is a CLI tool that helps generate public & private certificates/keys for HMAC/RSA/ECDSA algorithms
+
+## Installation
+
+### Using golang
+
+If you have golang installed and want to install `cert-generator` as binary that would run with `go/bin` then you can install using
+
+```sh
+go install github.com/lakhansamani/cert-generator
+```
+
+## Usage
+
+### Flags with `cert-manager` cli command
+
+- `-a, --algorithm` string Algorithm for which certificates will be generated. Valid values are RS256, RS384, RS512, ES256, ES384, ES512, HS256, HS384, HS512 (default "RS256")
+- `-h, --help` help for cert-generator
+- `-k, --key` string Key ID using which certificates will be generated. Default will be random UUID. (default "RANDOM KEY")
+
+### Example
+
+```sh
+cert-generator
+```
+
+![example](/example.png)
