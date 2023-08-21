@@ -15,17 +15,14 @@ func NewRSAKey(algo, keyID string) (*rsa.PrivateKey, string, string, string, err
 	if err != nil {
 		return nil, "", "", "", err
 	}
-
 	privateKey, publicKey, err := AsRSAStr(key, &key.PublicKey)
 	if err != nil {
 		return nil, "", "", "", err
 	}
-
 	jwkPublicKey, err := GetPubJWK(algo, keyID, &key.PublicKey)
 	if err != nil {
 		return nil, "", "", "", err
 	}
-
 	return key, privateKey, publicKey, string(jwkPublicKey), err
 }
 
@@ -60,7 +57,6 @@ func ExportRsaPublicKeyAsPemStr(pubkey *rsa.PublicKey) string {
 			Bytes: pubkeyBytes,
 		},
 	)
-
 	return string(pubkeyPem)
 }
 
@@ -70,12 +66,10 @@ func ParseRsaPrivateKeyFromPemStr(privPEM string) (*rsa.PrivateKey, error) {
 	if block == nil {
 		return nil, errors.New("failed to parse PEM block containing the key")
 	}
-
 	priv, err := x509.ParsePKCS1PrivateKey(block.Bytes)
 	if err != nil {
 		return nil, err
 	}
-
 	return priv, nil
 }
 
@@ -85,12 +79,10 @@ func ParseRsaPublicKeyFromPemStr(pubPEM string) (*rsa.PublicKey, error) {
 	if block == nil {
 		return nil, errors.New("failed to parse PEM block containing the key")
 	}
-
 	pub, err := x509.ParsePKCS1PublicKey(block.Bytes)
 	if err != nil {
 		return nil, err
 	}
-
 	return pub, nil
 }
 
