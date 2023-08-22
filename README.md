@@ -9,7 +9,7 @@ Cert Helper is a CLI tool that helps generate public & private certificates/keys
 If you have golang installed and want to install `cert-helper` as binary that would run with `go/bin` then you can install using
 
 ```sh
-go install github.com/lakhansamani/cert-helper
+go install github.com/lakhansamani/cert-helper@latest
 ```
 
 ## Usage

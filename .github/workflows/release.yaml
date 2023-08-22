@@ -19,7 +19,7 @@ on:
 
 jobs:
   releases:
-    name: Release Authorizer
+    name: Release Cert Helper
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -55,7 +55,7 @@ jobs:
           mkdir -p cert-helper-${VERSION}-windows-amd64/build && cp bin/windows/amd64/cert-helper.exe cert-helper-${VERSION}-windows-amd64/ && zip -vr cert-helper-${VERSION}-windows-amd64.zip cert-helper-${VERSION}-windows-amd64
       - name: Upload assets
         run: |
-          github-assets-uploader -f cert-helper-${VERSION}-darwin-amd64.tar.gz -mediatype application/gzip -repo authorizerdev/authorizer -token ${{secrets.RELEASE_TOKEN}} -tag ${VERSION}
-          github-assets-uploader -f cert-helper-${VERSION}-linux-amd64.tar.gz -mediatype application/gzip -repo authorizerdev/authorizer -token ${{secrets.RELEASE_TOKEN}} -tag ${VERSION}
-          github-assets-uploader -f cert-helper-${VERSION}-linux-arm64.tar.gz -mediatype application/gzip -repo authorizerdev/authorizer -token ${{secrets.RELEASE_TOKEN}} -tag ${VERSION}
-          github-assets-uploader -f cert-helper-${VERSION}-windows-amd64.zip -mediatype application/zip -repo authorizerdev/authorizer -token ${{secrets.RELEASE_TOKEN}} -tag ${VERSION}
+          github-assets-uploader -f cert-helper-${VERSION}-darwin-amd64.tar.gz -mediatype application/gzip -repo lakhansamani/cert-helper -token ${{secrets.RELEASE_TOKEN}} -tag ${VERSION}
+          github-assets-uploader -f cert-helper-${VERSION}-linux-amd64.tar.gz -mediatype application/gzip -repo lakhansamani/cert-helper -token ${{secrets.RELEASE_TOKEN}} -tag ${VERSION}
+          github-assets-uploader -f cert-helper-${VERSION}-linux-arm64.tar.gz -mediatype application/gzip -repo lakhansamani/cert-helper -token ${{secrets.RELEASE_TOKEN}} -tag ${VERSION}
+          github-assets-uploader -f cert-helper-${VERSION}-windows-amd64.zip -mediatype application/zip -repo lakhansamani/cert-helper -token ${{secrets.RELEASE_TOKEN}} -tag ${VERSION}
