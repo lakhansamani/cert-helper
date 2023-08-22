@@ -12,6 +12,10 @@ If you have golang installed and want to install `cert-helper` as binary that wo
 go install github.com/lakhansamani/cert-helper@latest
 ```
 
+### Using binaries / exe
+
+Download the latest [binary / exe from the release section](https://github.com/lakhansamani/cert-helper/releases) and put in your in path.
+
 ## Usage
 
 ### Flags with `cert-helper generate` cli command
@@ -25,3 +29,9 @@ go install github.com/lakhansamani/cert-helper@latest
 ```sh
 cert-helper generate
 ```
+
+![example](/example.gif)
+
+### Support my work
+
+<a href="https://www.buymeacoffee.com/lakhansamani" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
