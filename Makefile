@@ -10,5 +10,5 @@ binaries:
 	gox \
 		-osarch="linux/amd64 linux/arm64 darwin/amd64 windows/amd64" \
 		-ldflags "-w -X main.version=$(VERSION)" \
-		-output="bin/{{.OS}}/{{.Arch}}/cert-generator" \
+		-output="bin/{{.OS}}/{{.Arch}}/cert-helper" \
 		./...

@@ -1,0 +1,61 @@
+on:
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+        type: choice
+        options:
+          - info
+          - warning
+          - debug
+      tags:
+        description: 'Tags'
+        required: false
+        type: boolean
+  release:
+    types: [created]
+
+jobs:
+  releases:
+    name: Release Authorizer
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v4
+        with:
+          go-version: '^1.20'
+      - name: Install dependencies
+        run: |
+          sudo apt-get install build-essential wget zip  libc6-dev-arm64-cross && \
+          echo "/usr/bin/x86_64-w64-mingw32-gcc" >> GITHUB_PATH && \
+          wget --no-check-certificate --progress=dot:mega https://github.com/wangyoucao577/assets-uploader/releases/download/v0.3.0/github-assets-uploader-v0.3.0-linux-amd64.tar.gz -O github-assets-uploader.tar.gz && \
+          tar -zxf github-assets-uploader.tar.gz && \
+          sudo mv github-assets-uploader /usr/sbin/ && \
+          sudo rm -f github-assets-uploader.tar.gz && \
+          github-assets-uploader -version
+      - name: Print Go paths
+        run: whereis go
+      - name: Print Go Version
+        run: go version
+      - name: Install gox
+        run: go install github.com/mitchellh/gox@latest
+      - name: Set VERSION env
+        run: echo VERSION=$(basename ${GITHUB_REF}) >> ${GITHUB_ENV}
+      - name: Copy .env file
+        run: mv .env.sample .env
+      - name: Build package
+        run: |
+          make clean && \
+          make build && \
+          mkdir -p cert-helper-${VERSION}-darwin-amd64 && cp bin/darwin/amd64/cert-helper cert-helper-${VERSION}-darwin-amd64/ && tar cvfz cert-helper-${VERSION}-darwin-amd64.tar.gz cert-helper-${VERSION}-darwin-amd64 && \
+          mkdir -p cert-helper-${VERSION}-linux-amd64/build && cp bin/linux/amd64/cert-helper cert-helper-${VERSION}-linux-amd64/ && tar cvfz cert-helper-${VERSION}-linux-amd64.tar.gz cert-helper-${VERSION}-linux-amd64 && \
+          mkdir -p cert-helper-${VERSION}-linux-arm64/build && cp bin/linux/arm64/cert-helper cert-helper-${VERSION}-linux-arm64/ && tar cvfz cert-helper-${VERSION}-linux-arm64.tar.gz cert-helper-${VERSION}-linux-arm64 && \
+          mkdir -p cert-helper-${VERSION}-windows-amd64/build && cp bin/windows/amd64/cert-helper.exe cert-helper-${VERSION}-windows-amd64/ && zip -vr cert-helper-${VERSION}-windows-amd64.zip cert-helper-${VERSION}-windows-amd64
+      - name: Upload assets
+        run: |
+          github-assets-uploader -f cert-helper-${VERSION}-darwin-amd64.tar.gz -mediatype application/gzip -repo authorizerdev/authorizer -token ${{secrets.RELEASE_TOKEN}} -tag ${VERSION}
+          github-assets-uploader -f cert-helper-${VERSION}-linux-amd64.tar.gz -mediatype application/gzip -repo authorizerdev/authorizer -token ${{secrets.RELEASE_TOKEN}} -tag ${VERSION}
+          github-assets-uploader -f cert-helper-${VERSION}-linux-arm64.tar.gz -mediatype application/gzip -repo authorizerdev/authorizer -token ${{secrets.RELEASE_TOKEN}} -tag ${VERSION}
+          github-assets-uploader -f cert-helper-${VERSION}-windows-amd64.zip -mediatype application/zip -repo authorizerdev/authorizer -token ${{secrets.RELEASE_TOKEN}} -tag ${VERSION}

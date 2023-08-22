@@ -1,22 +1,19 @@
 package cmd
 
 import (
-	"encoding/json"
-
 	"github.com/google/uuid"
 	"github.com/spf13/cobra"
-
-	"github.com/lakhansamani/cert-generator/pkg"
 )
 
 var (
-	// RootCmd is the root (and only) command of this service
+	// RootCmd is the root command
 	RootCmd = &cobra.Command{
-		Use:   "cert-generator",
-		Short: "Certificate Generator",
-		Run:   runRootCmd,
+		Use:   "cert-helper",
+		Short: "Certificate Helper",
+		Run:   runRootCommand,
 	}
-	rootArgs struct {
+	// arguments used by the generate command
+	generateCommandArgs struct {
 		// Algorithm is the algorithm for which certificates will be generated
 		algorithm string
 		// Key is the key ID using which certificates will be generated
@@ -24,61 +21,19 @@ var (
 	}
 )
 
+// Set version of the cli tool
+func SetVersion(version string) {
+	RootCmd.Version = version
+}
+
 func init() {
 	// Setup flags
-	f := RootCmd.Flags()
-	f.StringVarP(&rootArgs.algorithm, "algorithm", "a", "RS256", "Algorithm for which certificates will be generated. Valid values are RS256, RS384, RS512, ES256, ES384, ES512, HS256, HS384, HS512")
-	f.StringVarP(&rootArgs.key, "key", "k", uuid.NewString(), "Key ID using which certificates will be generated. Default will be random UUID.")
+	f := GenerateCommand.Flags()
+	f.StringVarP(&generateCommandArgs.algorithm, "algorithm", "a", "RS256", "Algorithm for which certificates will be generated. Valid values are RS256, RS384, RS512, ES256, ES384, ES512, HS256, HS384, HS512")
+	f.StringVarP(&generateCommandArgs.key, "key", "k", uuid.NewString(), "Key ID using which certificates will be generated. Default will be random UUID.")
+	RootCmd.AddCommand(GenerateCommand)
 }
 
-type Output struct {
-	EncryptionKey string `json:"encryption_key"`
-	Secret        string `json:"secret"`
-	PrivateKey    string `json:"private_key"`
-	PublicKey     string `json:"public_key"`
-}
-
-func runRootCmd(cmd *cobra.Command, args []string) {
-	algo := rootArgs.algorithm
-	key := rootArgs.key
-	output := Output{
-		EncryptionKey: key,
-	}
-	if pkg.IsHMACA(algo) {
-		secret, _, err := pkg.NewHMACKey(algo, key)
-		if err != nil {
-			panic(err)
-		}
-		output.Secret = secret
-	} else if pkg.IsECDSA(algo) {
-		_, privateKey, publicKey, _, err := pkg.NewECDSAKey(algo, key)
-		if err != nil {
-			panic(err)
-		}
-		output.PrivateKey = privateKey
-		output.PublicKey = publicKey
-	} else if pkg.IsRSA(algo) {
-		_, privateKey, publicKey, _, err := pkg.NewRSAKey(algo, key)
-		if err != nil {
-			panic(err)
-		}
-		output.PrivateKey = privateKey
-		output.PublicKey = publicKey
-	} else {
-		panic("Invalid algo")
-	}
-
-	// Print stringified JSON
-	b, err := json.Marshal(output)
-	if err != nil {
-		panic(err)
-	}
-	println("-----BEGIN ENCRYPTION KEY-----")
-	println(rootArgs.key)
-	println("-----BEGIN ENCRYPTION KEY-----\n")
-	println(output.PrivateKey)
-	println(output.PublicKey)
-	println("-----BEGIN JSON OUTPUT-----")
-	println(string(b))
-	println("-----END JSON OUTPUT-----\n")
+func runRootCommand(cmd *cobra.Command, args []string) {
+	cmd.Usage()
 }

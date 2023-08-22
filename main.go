@@ -1,15 +1,15 @@
 package main
 
 import (
-	"github.com/lakhansamani/cert-generator/cmd"
+	"github.com/lakhansamani/cert-helper/cmd"
 )
 
 var (
-	// Version is the version of this service
-	version = "0.0.1"
+	version = "0.0.0"
 )
 
 func main() {
+	cmd.SetVersion(version)
 	if err := cmd.RootCmd.Execute(); err != nil {
 		panic("Failed to run root command")
 	}
