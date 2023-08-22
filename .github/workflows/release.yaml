@@ -46,7 +46,7 @@ jobs:
       - name: Build package
         run: |
           make clean && \
-          make build && \
+          make && \
           mkdir -p cert-helper-${VERSION}-darwin-amd64 && cp bin/darwin/amd64/cert-helper cert-helper-${VERSION}-darwin-amd64/ && tar cvfz cert-helper-${VERSION}-darwin-amd64.tar.gz cert-helper-${VERSION}-darwin-amd64 && \
           mkdir -p cert-helper-${VERSION}-linux-amd64/build && cp bin/linux/amd64/cert-helper cert-helper-${VERSION}-linux-amd64/ && tar cvfz cert-helper-${VERSION}-linux-amd64.tar.gz cert-helper-${VERSION}-linux-amd64 && \
           mkdir -p cert-helper-${VERSION}-linux-arm64/build && cp bin/linux/arm64/cert-helper cert-helper-${VERSION}-linux-arm64/ && tar cvfz cert-helper-${VERSION}-linux-arm64.tar.gz cert-helper-${VERSION}-linux-arm64 && \
